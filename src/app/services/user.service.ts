@@ -8,6 +8,9 @@ import { environment } from 'src/environments/environment';
 
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
+import { UpdateForm } from '../interfaces/update-form.interface';
+
+import { Usuario } from '../models/user.models';
 
 const url = environment.base_url;
 
@@ -19,9 +22,18 @@ declare const gapi: any;
 export class UserService {
 
   public auth2:any;
+  public usuario: Usuario;
 
   constructor( private http: HttpClient, private router: Router, private ngZone: NgZone) {
     this.googleInit();
+  }
+
+  get token(): string {
+    return localStorage.getItem('token') || '';
+  }
+
+  get uid(): string {
+    return this.usuario.uid || '';
   }
 
   logout(){
@@ -35,17 +47,18 @@ export class UserService {
   }
 
   validarToken(): Observable<boolean>{
-    const token = localStorage.getItem('token') || '';
 
     return this.http.get(`${url}/auth`,{
       headers: {
-        'Authorization': token
+        'Authorization': this.token
       }
     }).pipe(
-      tap((resp: any) => {
+      map((resp: any) => {
+        const {email, google, name, role, status, img, uid} = resp.user;
+        this.usuario = new Usuario( name, email,'',status, img, google, role, uid);
         localStorage.setItem('token', resp.token);
+        return true;
       }),
-      map( resp => true),
       catchError( err => of(false))
     );
   }
@@ -67,6 +80,15 @@ export class UserService {
 
   crearUsuario( formData: RegisterForm ){
     return this.http.post(`${url}/users`, formData).pipe(tap((resp: any)=> { localStorage.setItem('token',resp.token)}));
+  }
+
+  actualizarUsuario( formData: UpdateForm){
+    formData = { ...formData, role: this.usuario.role };
+    return this.http.put(`${url}/users/${this.uid}`, formData, {
+      headers: {
+      'Authorization': this.token
+      }
+    })
   }
 
   login( formData: LoginForm ){

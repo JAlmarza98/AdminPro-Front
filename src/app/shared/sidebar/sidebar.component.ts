@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { UserService } from '../../services/user.service';
 
+import { Usuario } from '../../models/user.models';
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -11,10 +13,12 @@ import { UserService } from '../../services/user.service';
 
 export class SidebarComponent  {
 
-  menuItems: any[];
+  public usuario: Usuario;
+  public menuItems: any[];
 
   constructor( private sidebarService: SidebarService, private userService:UserService ) {
     this.menuItems = sidebarService.menu;
+    this.usuario = userService.usuario;
   }
 
   logout(){

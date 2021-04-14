@@ -1,4 +1,6 @@
+import { environment } from '../../environments/environment';
 
+const base_url = environment.base_url;
 
 export class Usuario {
 
@@ -12,4 +14,14 @@ export class Usuario {
     public role?: string,
     public uid?: string,
   ){}
+
+  get imagenUrl(){
+    if( this.img ){
+      if(this.img.includes('https')){
+        return this.img;
+      }
+      return `${ base_url }/uploads/users/${ this.img }`;
+    }
+    return `${ base_url }/uploads/users/no-image`;
+  }
 }
