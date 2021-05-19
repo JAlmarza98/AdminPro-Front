@@ -36,3 +36,19 @@
   width: 200px;
   border-radius: 100%;
 }
+
+.w100{
+  width: 100px;
+}
+
+.w150{
+  width: 150px;
+}
+
+.avatar{
+  width: 25px;
+  border-radius: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

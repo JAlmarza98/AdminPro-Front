@@ -6,6 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
+import { CargarUsuario } from '../interfaces/cargar-usuarios.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { UpdateForm } from '../interfaces/update-form.interface';
@@ -34,6 +35,14 @@ export class UserService {
 
   get uid(): string {
     return this.usuario.uid || '';
+  }
+
+  get headers(){
+    return {
+      headers: {
+        'Authorization': this.token
+        }
+    }
   }
 
   logout(){
@@ -97,6 +106,31 @@ export class UserService {
 
   loginGoogle( id_token: any ){
     return this.http.post(`${url}/auth/google`, {id_token}).pipe(tap((resp: any)=> { localStorage.setItem('token',resp.token)}));
+  }
+
+  cargarUsuarios( page:number ){
+
+    const getUrl =`${url}/users?page=${page}`
+    return this.http.get<CargarUsuario>( getUrl, this.headers)
+                    .pipe(
+                      map(resp => {
+                        const usuarios = resp.users.map(
+                          user => new Usuario(user.name, user.email, '', user.status ,user.img, user.google, user.role, user.uid)
+                        );
+
+                        return {
+                          total: resp.total_users,
+                          usuarios
+                        };
+                      })
+                    )
+  }
+
+  eliminarUsuario(usuario: Usuario){
+
+    const deleteURL =`${url}/users/${usuario.uid}`
+
+    return this.http.delete(deleteURL, this.headers);
   }
 
 }
