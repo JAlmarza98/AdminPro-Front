@@ -71,6 +71,50 @@ export class UsuariosComponent implements OnInit {
   }
 
   eliminarUsuario( usuario: Usuario){
+
+    if(usuario.uid === this.userService.uid){
+      return Swal.fire(
+        'Error',
+        'No puedes borrarte a ti mismo',
+        'error'
+      )
+
+    }else{
+      return Swal.fire({
+        title: '¿Borrar usuario?',
+        text: `Esta a punto de borrar a ${usuario.name}`,
+        icon: 'question',
+        showCancelButton: true,
+        // confirmButtonColor: '#3085d6',
+        // cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          this.userService.eliminarUsuario( usuario ).subscribe( resp =>{
+
+            this.cargarUsuarios();
+
+            Swal.fire(
+              '¡Eliminado!',
+              `${usuario.name} ha sido eliminado con exito`,
+              'success'
+            );
+
+            }, error =>
+
+            Swal.fire(
+              'Error',
+              error.error.message,
+              'warning'
+            )
+
+          )
+        }
+      })
+
+    }
+
     Swal.fire({
       title: '¿Borrar usuario?',
       text: `Esta a punto de borrar a ${usuario.name}`,
@@ -103,5 +147,9 @@ export class UsuariosComponent implements OnInit {
         )
       }
     })
+  }
+
+  cambiarRole( usuario: Usuario ){
+    console.log(usuario);
   }
 }

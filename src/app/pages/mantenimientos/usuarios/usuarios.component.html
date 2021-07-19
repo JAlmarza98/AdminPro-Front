@@ -40,7 +40,7 @@
                             <th class="w100">Avatar</th>
                             <th>Email</th>
                             <th>Nombre</th>
-                            <th class="w150">Role</th>
+                            <th class="w200">Role</th>
                             <th class="w100">Auth</th>
                             <th class="text-nowrap w100">Aciones</th>
                         </tr>
@@ -60,8 +60,7 @@
                               <span *ngIf="usuario.google" class="label label-danger">Google</span>
                               <span *ngIf="!usuario.google"class="label label-info">Email</span>
                             </td>
-                            <td class="text-nowrap">
-                                <a href="#" data-toggle="tooltip" data-original-title="Editar"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                            <td class="text-nowrap text-center">
                                 <a data-toggle="tooltip" data-original-title="Borrar" (click)="eliminarUsuario(usuario)" class="cursor"> <i class="fa fa-close text-danger"></i> </a>
                             </td>
                         </tr>
